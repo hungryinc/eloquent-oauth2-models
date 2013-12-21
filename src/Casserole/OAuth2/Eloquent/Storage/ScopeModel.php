@@ -1,12 +1,14 @@
 <?php
 
+namespace Casserole\OAuth2\Eloquent\Storage;
+
 use \League\OAuth2\Server\Storage\ScopeInterface;
 
 class ScopeModel implements ScopeInterface {
 
     public function getScope($scope, $clientId = null, $grantType = null)
 	{
-		$result = DB::table('oauth_scopes')
+		$result = \DB::table('oauth_scopes')
 			->where('key', $scope)
 			->first();
 

@@ -1,5 +1,7 @@
 <?php
 
+namespace Casserole\OAuth2\Eloquent\Storage;
+
 use \League\OAuth2\Server\Storage\ClientInterface;
 
 class ClientModel implements ClientInterface {
@@ -7,7 +9,7 @@ class ClientModel implements ClientInterface {
     public function getClient($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
     {
         if ( ! is_null($redirectUri) && is_null($clientSecret)) {
-            $result = DB::table('oauth_clients')
+            $result = \DB::table('oauth_clients')
                 ->join('oauth_client_endpoints', 'oauth_clients.id', '=', 'oauth_client_endpoints.client_id')
                 ->where('oauth_clients.id', $clientId)
                 ->where('oauth_client_endpoints.redirect_uri', $redirectUri)
@@ -15,14 +17,14 @@ class ClientModel implements ClientInterface {
         }
 
         elseif ( ! is_null($clientSecret) && is_null($redirectUri)) {
-            $result = DB::table('oauth_clients')
+            $result = \DB::table('oauth_clients')
                 ->where('id', $clientId)
                 ->where('secret', $clientSecret)
                 ->first();
         }
 
         elseif ( ! is_null($clientSecret) && ! is_null($redirectUri)) {
-            $result = DB::table('oauth_clients')
+            $result = \DB::table('oauth_clients')
                 ->join('oauth_client_endpoints', 'oauth_clients.id', '=', 'oauth_client_endpoints.client_id')
                 ->where('oauth_clients.id', $clientId)
                 ->where('oauth_clients.secret', $clientSecret)

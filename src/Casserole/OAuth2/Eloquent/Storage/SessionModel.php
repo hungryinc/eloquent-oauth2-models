@@ -1,5 +1,7 @@
 <?php
 
+namespace Casserole\OAuth2\Eloquent\Storage;
+
 use League\OAuth2\Server\Storage\SessionInterface;
 
 class SessionModel implements SessionInterface
@@ -13,7 +15,7 @@ class SessionModel implements SessionInterface
      */
     public function createSession($clientId, $ownerType, $ownerId)
     {
-        return DB::table('oauth_sessions')->insertGetId([
+        return \DB::table('oauth_sessions')->insertGetId([
             'client_id'         => $clientId,
             'owner_type'        => $ownerType,
             'owner_id'          => $ownerId
@@ -29,7 +31,7 @@ class SessionModel implements SessionInterface
      */
     public function deleteSession($clientId, $ownerType, $ownerId)
     {
-        DB::table('oauth_sessions')
+        \DB::table('oauth_sessions')
             ->where('client_id', $clientId)
             ->where('owner_type', $ownerType)
             ->where('owner_id', $ownerId)
@@ -43,7 +45,7 @@ class SessionModel implements SessionInterface
      */
     public function removeRefreshToken($refreshToken)
     {
-        DB::table('oauth_session_refresh_tokens')
+        \DB::table('oauth_session_refresh_tokens')
             ->where('refresh_token', $refreshToken)
             ->delete();
     }
@@ -64,7 +66,7 @@ class SessionModel implements SessionInterface
      */
     public function associateRedirectUri($sessionId, $redirectUri)
     {
-        DB::table('oauth_session_redirects')->insert([
+        \DB::table('oauth_session_redirects')->insert([
             'session_id'    => $sessionId,
             'redirect_uri'  => $redirectUri,
         ]);
@@ -79,7 +81,7 @@ class SessionModel implements SessionInterface
      */
     public function associateAccessToken($sessionId, $accessToken, $expireTime)
     {
-        return DB::table('oauth_session_access_tokens')->insertGetId([
+        return \DB::table('oauth_session_access_tokens')->insertGetId([
             'session_id'            => $sessionId,
             'access_token'          => $accessToken,
             'access_token_expires'  => $expireTime,
@@ -94,7 +96,7 @@ class SessionModel implements SessionInterface
      */
     public function associateRefreshToken($accessTokenId, $refreshToken, $expireTime, $clientId)
     {
-        DB::table('oauth_session_refresh_tokens')->insert([
+        \DB::table('oauth_session_refresh_tokens')->insert([
             'session_access_token_id'  => $accessTokenId,
             'refresh_token'            => $refreshToken,
             'refresh_token_expires'    => $expireTime,
@@ -112,7 +114,7 @@ class SessionModel implements SessionInterface
      */
     public function associateAuthCode($sessionId, $authCode, $expireTime, $scopeIds = null)
     {
-        DB::table('oauth_session_authcodes')->insert([
+        \DB::table('oauth_session_authcodes')->insert([
             'session_id'        => $sessionId,
             'auth_code'         => $authCode,
             'auth_code_expires' => $expireTime,
@@ -127,7 +129,7 @@ class SessionModel implements SessionInterface
      */
     public function removeAuthCode($sessionId)
     {
-        DB::table('oauth_session_authcodes')
+        \DB::table('oauth_session_authcodes')
             ->where('session_id', $sessionId)
             ->delete();
     }
@@ -141,7 +143,7 @@ class SessionModel implements SessionInterface
      */
     public function validateAuthCode($clientId, $redirectUri, $authCode)
     {
-        $result = DB::table('oauth_sessions')
+        $result = \DB::table('oauth_sessions')
             ->select('oauth_sessions.id, oauth_session_authcodes.scope_ids')
             ->join('oauth_session_authcodes', 'oauth_sessions.id', '=', 'oauth_session_authcodes.session_id')
             ->join('oauth_session_redirects', 'oauth_sessions.id', '=', 'oauth_session_redirects.session_id')
@@ -161,7 +163,7 @@ class SessionModel implements SessionInterface
      */
     public function validateAccessToken($accessToken)
     {
-        $result = DB::table('oauth_session_access_tokens')
+        $result = \DB::table('oauth_session_access_tokens')
             ->join('oauth_sessions', 'oauth_session_access_tokens.session_id', '=', 'oauth_sessions.id')
             ->where('access_token', $accessToken)
             ->where('access_token_expires', '>=', time())
@@ -177,7 +179,7 @@ class SessionModel implements SessionInterface
      */
     public function validateRefreshToken($refreshToken, $clientId)
     {
-        $result = DB::table('oauth_session_refresh_tokens')
+        $result = \DB::table('oauth_session_refresh_tokens')
             ->where('refresh_token', $refreshToken)
             ->where('client_id', $clientId)
             ->where('refresh_token_expires', '>=', time())
@@ -193,7 +195,7 @@ class SessionModel implements SessionInterface
      */
     public function getAccessToken($accessTokenId)
     {
-        $result = DB::table('oauth_session_access_tokens')
+        $result = \DB::table('oauth_session_access_tokens')
             ->where('id', $accessTokenId)
             ->first();
 
@@ -208,7 +210,7 @@ class SessionModel implements SessionInterface
      */
     public function associateScope($accessTokenId, $scopeId) 
     {
-        DB::table('oauth_session_token_scopes')->insert([
+        \DB::table('oauth_session_token_scopes')->insert([
             'session_access_token_id'   => $accessTokenId,
             'scope_id'                  => $scopeId,
         ]);
@@ -221,7 +223,7 @@ class SessionModel implements SessionInterface
      */
     public function getScopes($accessToken)
     {
-        return DB::table('oauth_session_token_scopes')
+        return \DB::table('oauth_session_token_scopes')
             ->join('oauth_session_access_tokens', 'oauth_session_token_scopes.session_access_token_id', '=', 'oauth_session_access_tokens.id')
             ->join('oauth_scopes', 'oauth_session_token_scopes.session_access_token_id', '=', 'oauth_scopes.id')
             ->where('access_token', $accessToken)

@@ -1,0 +1,46 @@
+{
+	"name": "casserole/eloquent-oauth2-models",
+	"description": "Eloquent database models for https://github.com/php-loep/oauth2-server OAuth 2 Server. This package does nothing (mostly) without the OAuth2 Server.",
+	"version": "0.0.1",
+	"homepage": "https://github.com/casserole/eloquent-oauth2-models",
+	"license": "MIT",
+	"require": {
+		"php": ">=5.4.0"
+	},
+	"repositories": [
+		{
+			"type": "git",
+			"url": "https://github.com/casserole/eloquent-oauth2-models.git"
+		}
+	],
+	"keywords": [
+		"oauth",
+		"oauth2",
+		"server",
+		"authorization",
+		"authentication",
+		"resource",
+		"api",
+		"auth",
+		"protect",
+		"secure",
+        "eloquent",
+        "laravel"
+	],
+	"authors": [
+		{
+			"name": "Zachary Blank",
+			"email": "zachary@casserolelabs.com",
+			"homepage": "http://www.casserolelabs.com",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-0": {
+			"Casserole\\OAuth2\\Eloquent": "src/"
+		}
+	},
+	"suggest": {
+
+	}
+}
