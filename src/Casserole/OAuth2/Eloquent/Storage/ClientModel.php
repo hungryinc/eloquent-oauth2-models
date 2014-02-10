@@ -7,7 +7,7 @@ use \League\OAuth2\Server\Storage\ClientInterface;
 class ClientModel implements ClientInterface {
 
     public function getClient($clientId, $clientSecret = null, $redirectUri = null, $grantType = null)
-    {
+    {        
         if ( ! is_null($redirectUri) && is_null($clientSecret)) {
             $result = \DB::table('oauth_clients')
                 ->join('oauth_client_endpoints', 'oauth_clients.id', '=', 'oauth_client_endpoints.client_id')
@@ -30,6 +30,8 @@ class ClientModel implements ClientInterface {
                 ->where('oauth_clients.secret', $clientSecret)
                 ->where('oauth_client_endpoints.redirect_uri', $redirectUri)
                 ->first();
+        } else {
+            $result = null;
         }
 
         if (is_null($result)) {
